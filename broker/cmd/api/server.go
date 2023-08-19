@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 )
 
 type JSONResponse struct {
@@ -14,19 +15,22 @@ type JSONResponse struct {
 }
 
 type Server struct {
-	*mux.Router
+	chi.Router
 }
 
 func NewServer() *Server {
+	r := chi.NewRouter()
+
 	s := &Server{
-		Router: mux.NewRouter(),
+		Router: r,
 	}
 	s.routes()
+
 	return s
 }
 
 func (s *Server) routes() {
-	s.HandleFunc("/", s.Broker).Methods("POST")
+	s.Router.Post("/", s.Broker)
 }
 
 func enableCors(w *http.ResponseWriter) {
@@ -37,7 +41,6 @@ func enableCors(w *http.ResponseWriter) {
 
 func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse) error {
 	out, err := json.Marshal(data)
-
 	if err != nil {
 		return err
 	}
@@ -67,4 +70,6 @@ func (s *Server) Broker(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
+
+	fmt.Println("successful broker service call")
 }
