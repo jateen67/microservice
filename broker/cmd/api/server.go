@@ -54,6 +54,9 @@ func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse) error {
 }
 
 func (s *Server) Broker(w http.ResponseWriter, r *http.Request) {
+
+	enableCors(&w)
+
 	payload := JSONResponse{
 		Error:   false,
 		Message: "Successfully hit the Broker!",

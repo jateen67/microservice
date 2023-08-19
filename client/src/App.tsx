@@ -2,19 +2,15 @@ import "./App.css";
 
 function App() {
   const getRoot = async () => {
-    const res = await fetch("http://localhost:8080");
-    console.log(await res.text());
-  };
-
-  const getHello = async () => {
-    const res = await fetch("http://localhost:8080/hello");
-    console.log(await res.text());
+    const res = await fetch("http://localhost:80", {
+      method: "POST",
+    });
+    console.log(await res.json());
   };
 
   return (
     <>
       <button onClick={getRoot}>get root</button>
-      <button onClick={getHello}>get hello</button>
     </>
   );
 }
