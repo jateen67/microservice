@@ -6,7 +6,7 @@ function App() {
       Content: "Empty request",
     };
 
-    const res = await fetch("http://localhost:80", {
+    const res = await fetch("http://localhost:8080", {
       method: "POST",
       body: JSON.stringify(body),
     });
