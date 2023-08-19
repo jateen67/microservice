@@ -1,7 +1,7 @@
 import "./App.css";
 
 function App() {
-  const getRoot = async () => {
+  const getBroker = async () => {
     const body = {
       Content: "Empty request",
     };
@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-      <button onClick={getRoot}>get root</button>
+      <button onClick={getBroker}>Broker Service</button>
     </>
   );
 }
