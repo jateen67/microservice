@@ -25,7 +25,6 @@ func ConnectToDB() (*sql.DB, error) {
 				count++
 				db.Close()
 			} else {
-				log.Println("connected to postgres successfully")
 				return db, nil
 			}
 		}

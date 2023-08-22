@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -23,10 +23,10 @@ func NewServer() *Server {
 }
 
 func (s *Server) routes() {
-	s.Router.Post("/", s.Broker)
+	s.Router.Post("/", s.broker)
 }
 
-func (s *Server) Broker(w http.ResponseWriter, r *http.Request) {
+func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 
 	enableCors(&w)
 
@@ -41,5 +41,5 @@ func (s *Server) Broker(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	fmt.Println("successful broker service call")
+	log.Println("successful broker service call")
 }
