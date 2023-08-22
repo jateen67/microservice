@@ -1,3 +1,3 @@
 package db
 
-func (db Database) GetUserByEmail(itemId int) {}
+func GetUserByEmail(itemId int) {}
