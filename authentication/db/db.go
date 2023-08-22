@@ -3,13 +3,14 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 	"time"
 
 	_ "github.com/lib/pq"
 )
 
 func ConnectToDB() (*sql.DB, error) {
-	connString := "host=postgres port=5432 user=postgres password=password dbname=users_db sslmode=disable"
+	connString := os.Getenv("DATABASE_CONNECTION_STRING")
 	count := 1
 
 	for {
@@ -29,7 +30,7 @@ func ConnectToDB() (*sql.DB, error) {
 			}
 		}
 
-		if count > 20 {
+		if count > 10 {
 			return nil, err
 		}
 

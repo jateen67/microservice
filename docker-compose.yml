@@ -12,6 +12,8 @@ services:
       dockerfile: authentication.Dockerfile
     depends_on:
       - postgres
+    environment:
+      DATABASE_CONNECTION_STRING: "host=postgres port=5432 user=postgres password=password dbname=users_db sslmode=disable"
   postgres:
     image: postgres
     restart: always
