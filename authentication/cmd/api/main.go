@@ -29,6 +29,23 @@ func main() {
 
 	log.Println("users table created successfully")
 
+	// check if user exists already
+	userExists, err := db.UserExists(database, "admin@example.com")
+	if err != nil {
+		log.Fatalf("error checking if user exists: %f", err)
+	}
+
+	if !userExists {
+		// insert a new user
+		err = db.InsertUser(database, "admin@example.com", "password123")
+		if err != nil {
+			log.Fatalf("error inserting user: %f", err)
+		}
+		log.Println("user inserted successfully")
+	} else {
+		log.Println("user already inserted")
+	}
+
 	// start auth server
 	srv := NewServer()
 	log.Println("starting authentication server...")

@@ -49,3 +49,19 @@ func CreateTable(db *sql.DB) error {
 	_, err := db.Exec(query)
 	return err
 }
+
+func UserExists(db *sql.DB, email string) (bool, error) {
+	query := "SELECT COUNT(*) FROM users WHERE email= $1"
+	var count int
+	err := db.QueryRow(query, email).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func InsertUser(db *sql.DB, email, password string) error {
+	query := "INSERT INTO users (email, password) VALUES ($1, $2)"
+	_, err := db.Exec(query, email, password)
+	return err
+}
