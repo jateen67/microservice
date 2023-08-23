@@ -44,8 +44,7 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 		Message: "Successfully hit the Broker!",
 	}
 
-	err := s.writeJSON(w, payload)
-
+	err := s.writeJSON(w, payload, http.StatusOK)
 	if err != nil {
 		log.Println("error:", err)
 		return
@@ -60,14 +59,14 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
 	req, err := http.NewRequest("POST", "http://authentication/authentication", bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Println("error:", err)
+		s.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println("error:", err)
+		s.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	defer res.Body.Close()
@@ -76,9 +75,14 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(res.Body).Decode(&jsonFromService)
 	if err != nil {
-		log.Println("error:", err)
+		s.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	s.writeJSON(w, jsonFromService)
+	err = s.writeJSON(w, jsonFromService, http.StatusOK)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+	log.Println("authenticated successfully")
 }
