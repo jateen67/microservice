@@ -46,11 +46,11 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 
 	err := s.writeJSON(w, responsePayload, http.StatusOK)
 	if err != nil {
-		log.Println("error:", err)
+		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("successful broker service call")
+	log.Println("successful broker service call from broker")
 }
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
@@ -84,5 +84,6 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-	log.Println("successful authentication service call")
+
+	log.Println("successful authentication service call from broker")
 }

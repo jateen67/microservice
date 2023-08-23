@@ -42,10 +42,10 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		Data:    "Replace with User data",
 	}
 
-	err := s.writeJSON(w, responsePayload)
+	err := s.writeJSON(w, responsePayload, http.StatusOK)
 
 	if err != nil {
-		log.Println("error:", err)
+		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
