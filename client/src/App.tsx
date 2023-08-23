@@ -17,7 +17,7 @@ function App() {
 
   const getAuthentication = async () => {
     const body = {
-      email: "johnsmith@example.com",
+      email: "admin@example.com",
       password: "password123",
     };
 
