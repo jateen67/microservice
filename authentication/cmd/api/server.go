@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -36,18 +37,26 @@ func (s *Server) routes() {
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
-	responsePayload := JSONResponse{
+	var reqPayload AuthenticationPayload
+
+	err := s.readJSON(w, r, &reqPayload)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	resPayload := JSONResponse{
 		Error:   false,
-		Message: "Successfully logged in!",
+		Message: fmt.Sprintf("Successfully logged in as %s!", reqPayload.Email),
 		Data:    "Replace with User data",
 	}
 
-	err := s.writeJSON(w, responsePayload, http.StatusOK)
+	err = s.writeJSON(w, resPayload, http.StatusOK)
 
 	if err != nil {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("successful login")
+	log.Println("authentication service: succesful login")
 }

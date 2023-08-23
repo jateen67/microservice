@@ -28,19 +28,11 @@ func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int)
 	return nil
 }
 
-func (s *Server) errorJSON(w http.ResponseWriter, err error, status ...int) error {
-	var code int
-
-	if len(status) > 0 {
-		code = status[0]
-	} else {
-		code = http.StatusBadRequest
-	}
-
-	responsePayload := JSONResponse{
+func (s *Server) errorJSON(w http.ResponseWriter, err error, status int) error {
+	resPayload := JSONResponse{
 		Error:   true,
 		Message: err.Error(),
 	}
 
-	return s.writeJSON(w, responsePayload, code)
+	return s.writeJSON(w, resPayload, status)
 }

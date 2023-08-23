@@ -11,6 +11,11 @@ type JSONResponse struct {
 	Data    any    `json:"data"`
 }
 
+type AuthenticationPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int) error {
 	out, err := json.Marshal(data)
 	if err != nil {
@@ -28,6 +33,16 @@ func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int)
 	return nil
 }
 
+func (s *Server) readJSON(w http.ResponseWriter, r *http.Request, a *AuthenticationPayload) error {
+	err := json.NewDecoder(r.Body).Decode(a)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *Server) errorJSON(w http.ResponseWriter, err error, status ...int) error {
 	var code int
 
@@ -37,10 +52,10 @@ func (s *Server) errorJSON(w http.ResponseWriter, err error, status ...int) erro
 		code = http.StatusBadRequest
 	}
 
-	responsePayload := JSONResponse{
+	resPayload := JSONResponse{
 		Error:   true,
 		Message: err.Error(),
 	}
 
-	return s.writeJSON(w, responsePayload, code)
+	return s.writeJSON(w, resPayload, code)
 }

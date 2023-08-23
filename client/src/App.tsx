@@ -17,13 +17,17 @@ function App() {
 
   const getAuthentication = async () => {
     const body = {
-      Username: "johnsmith",
-      Password: "password123",
+      email: "johnsmith",
+      password: "password123",
     };
+
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
 
     const res = await fetch("http://localhost:8080/authentication", {
       method: "POST",
       body: JSON.stringify(body),
+      headers: headers,
     });
 
     console.log(body);

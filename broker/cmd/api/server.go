@@ -14,6 +14,11 @@ type Server struct {
 	chi.Router
 }
 
+type AuthenticationRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func NewServer() *Server {
 	r := chi.NewRouter()
 
@@ -39,25 +44,36 @@ func (s *Server) routes() {
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 
-	responsePayload := JSONResponse{
+	resPayload := JSONResponse{
 		Error:   false,
 		Message: "Successfully hit the Broker!",
 	}
 
-	err := s.writeJSON(w, responsePayload, http.StatusOK)
+	err := s.writeJSON(w, resPayload, http.StatusOK)
 	if err != nil {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("successful broker service call from broker")
+	log.Println("broker service: successful broker service call")
 }
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
+	var authRequest AuthenticationRequest
 
-	jsonData, _ := json.MarshalIndent(r.Body, "", "\t")
+	err := json.NewDecoder(r.Body).Decode(&authRequest)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
-	req, err := http.NewRequest("POST", "http://authentication/authentication", bytes.NewBuffer(jsonData))
+	reqPayload, err := json.Marshal(authRequest)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	req, err := http.NewRequest("POST", "http://authentication/authentication", bytes.NewBuffer(reqPayload))
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -71,19 +87,19 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 
-	var jsonFromService JSONResponse
+	var resJSON JSONResponse
 
-	err = json.NewDecoder(res.Body).Decode(&jsonFromService)
+	err = json.NewDecoder(res.Body).Decode(&resJSON)
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = s.writeJSON(w, jsonFromService, http.StatusOK)
+	err = s.writeJSON(w, resJSON, http.StatusOK)
 	if err != nil {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("successful authentication service call from broker")
+	log.Println("broker service: successful authentication service call")
 }
