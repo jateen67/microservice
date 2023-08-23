@@ -9,6 +9,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type Models struct {
+	User User
+}
+
 func ConnectToDB() (*sql.DB, error) {
 	connString := os.Getenv("DATABASE_CONNECTION_STRING")
 	count := 1

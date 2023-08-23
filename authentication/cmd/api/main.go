@@ -46,8 +46,9 @@ func main() {
 		log.Println("user already inserted")
 	}
 
+	userDB := db.NewUserDBImpl(database)
 	// start auth server
-	srv := NewServer()
+	srv := NewServer(userDB).Router
 	log.Println("starting authentication server...")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), srv)
 

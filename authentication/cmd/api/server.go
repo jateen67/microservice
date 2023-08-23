@@ -1,16 +1,19 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/jateen67/authentication/db"
 )
 
 type Server struct {
-	chi.Router
+	Router chi.Router
+	UserDB db.UserDB
 }
 
 type AuthenticationPayload struct {
@@ -18,7 +21,7 @@ type AuthenticationPayload struct {
 	Password string `json:"password"`
 }
 
-func NewServer() *Server {
+func NewServer(userDB db.UserDB) *Server {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
@@ -30,6 +33,7 @@ func NewServer() *Server {
 
 	s := &Server{
 		Router: r,
+		UserDB: userDB,
 	}
 	s.routes()
 
@@ -50,9 +54,15 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user, err := s.UserDB.GetUserByEmail(reqPayload.Email)
+	if err != nil {
+		s.errorJSON(w, errors.New("couldn't find user in database"), http.StatusBadRequest)
+		return
+	}
+
 	resPayload := JSONResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Successfully logged in as %s!", reqPayload.Email),
+		Message: fmt.Sprintf("Successfully logged in as %s!", user.Email),
 		Data:    "Replace with User data",
 	}
 
