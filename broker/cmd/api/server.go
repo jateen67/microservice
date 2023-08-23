@@ -47,7 +47,8 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 	err := s.writeJSON(w, payload)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Println("error:", err)
+		return
 	}
 
 	log.Println("successful broker service call")
