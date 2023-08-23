@@ -37,10 +37,10 @@ func (s *Server) errorJSON(w http.ResponseWriter, err error, status ...int) erro
 		code = http.StatusBadRequest
 	}
 
-	payload := JSONResponse{
+	responsePayload := JSONResponse{
 		Error:   true,
 		Message: err.Error(),
 	}
 
-	return s.writeJSON(w, payload, code)
+	return s.writeJSON(w, responsePayload, code)
 }

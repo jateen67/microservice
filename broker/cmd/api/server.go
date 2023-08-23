@@ -39,12 +39,12 @@ func (s *Server) routes() {
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 
-	payload := JSONResponse{
+	responsePayload := JSONResponse{
 		Error:   false,
 		Message: "Successfully hit the Broker!",
 	}
 
-	err := s.writeJSON(w, payload, http.StatusOK)
+	err := s.writeJSON(w, responsePayload, http.StatusOK)
 	if err != nil {
 		log.Println("error:", err)
 		return
@@ -84,5 +84,5 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-	log.Println("authenticated successfully")
+	log.Println("successful authentication service call")
 }

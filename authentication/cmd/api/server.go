@@ -36,18 +36,18 @@ func (s *Server) routes() {
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
-	payload := JSONResponse{
+	responsePayload := JSONResponse{
 		Error:   false,
 		Message: "Successfully logged in!",
 		Data:    "Replace with User data",
 	}
 
-	err := s.writeJSON(w, payload)
+	err := s.writeJSON(w, responsePayload)
 
 	if err != nil {
 		log.Println("error:", err)
 		return
 	}
 
-	log.Println("successful authentication service login")
+	log.Println("successful login")
 }
