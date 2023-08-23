@@ -23,6 +23,4 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Println("broker server started")
-
 }

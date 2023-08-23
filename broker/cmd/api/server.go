@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 type Server struct {
@@ -13,6 +16,13 @@ type Server struct {
 
 func NewServer() *Server {
 	r := chi.NewRouter()
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"http://*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders: []string{"Link"},
+	}))
 
 	s := &Server{
 		Router: r,
@@ -24,11 +34,10 @@ func NewServer() *Server {
 
 func (s *Server) routes() {
 	s.Router.Post("/", s.broker)
+	s.Router.Post("/authentication", s.authentication)
 }
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
-
-	enableCors(&w)
 
 	payload := JSONResponse{
 		Error:   false,
@@ -42,4 +51,33 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("successful broker service call")
+}
+
+func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
+
+	jsonData, _ := json.MarshalIndent(r.Body, "", "\t")
+
+	req, err := http.NewRequest("POST", "http://authentication/authentication", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Println("error:", err)
+		return
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		log.Println("error:", err)
+		return
+	}
+	defer res.Body.Close()
+
+	var jsonFromService JSONResponse
+
+	err = json.NewDecoder(res.Body).Decode(&jsonFromService)
+	if err != nil {
+		log.Println("error:", err)
+		return
+	}
+
+	s.writeJSON(w, jsonFromService)
 }

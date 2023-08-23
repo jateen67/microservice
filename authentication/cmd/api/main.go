@@ -41,6 +41,4 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Println("authentication server started")
-
 }

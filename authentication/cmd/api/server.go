@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 type Server struct {
@@ -13,6 +14,13 @@ type Server struct {
 
 func NewServer() *Server {
 	r := chi.NewRouter()
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"http://*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders: []string{"Link"},
+	}))
 
 	s := &Server{
 		Router: r,
@@ -28,11 +36,10 @@ func (s *Server) routes() {
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
-	enableCors(&w)
-
 	payload := JSONResponse{
 		Error:   false,
 		Message: "Successfully logged in!",
+		Data:    "Replace with User data",
 	}
 
 	err := s.writeJSON(w, payload)
