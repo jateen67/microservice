@@ -92,14 +92,6 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == http.StatusUnauthorized {
-		s.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
-		return
-	} else if res.StatusCode != http.StatusOK {
-		s.errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
-		return
-	}
-
 	var resJSON JSONResponse
 
 	err = json.NewDecoder(res.Body).Decode(&resJSON)
@@ -113,6 +105,4 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-
-	log.Println("broker service: successful authentication service call")
 }
