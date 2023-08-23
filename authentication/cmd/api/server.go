@@ -13,6 +13,11 @@ type Server struct {
 	chi.Router
 }
 
+type AuthenticationPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func NewServer() *Server {
 	r := chi.NewRouter()
 

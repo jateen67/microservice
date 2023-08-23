@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -14,7 +15,7 @@ type Server struct {
 	chi.Router
 }
 
-type AuthenticationRequest struct {
+type AuthenticationPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -59,15 +60,19 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
-	var authRequest AuthenticationRequest
+	var authPayload AuthenticationPayload
 
-	err := json.NewDecoder(r.Body).Decode(&authRequest)
+	err := s.readJSON(w, r, &authPayload)
+	if authPayload.Email == "" || authPayload.Password == "" {
+		s.errorJSON(w, errors.New("email and password must be non-empty"), http.StatusBadRequest)
+		return
+	}
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
-	reqPayload, err := json.Marshal(authRequest)
+	reqPayload, err := json.Marshal(authPayload)
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
@@ -86,6 +91,14 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		s.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		return
+	} else if res.StatusCode != http.StatusOK {
+		s.errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
+		return
+	}
 
 	var resJSON JSONResponse
 
