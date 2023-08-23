@@ -63,7 +63,7 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	resPayload := JSONResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Successfully logged in as %s!", user.Email),
-		Data:    "Replace with User data",
+		Data:    user,
 	}
 
 	err = s.writeJSON(w, resPayload, http.StatusOK)

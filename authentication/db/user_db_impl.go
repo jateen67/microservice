@@ -11,9 +11,9 @@ func NewUserDBImpl(db *sql.DB) *UserDBImpl {
 }
 
 func (u *UserDBImpl) GetUserByEmail(email string) (*User, error) {
-	query := "SELECT id, email, password FROM users WHERE email = $1"
+	query := "SELECT id, email, password, first_name, last_name, created_at FROM users WHERE email = $1"
 	var user User
-	err := u.DB.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password)
+	err := u.DB.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

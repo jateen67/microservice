@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/jateen67/authentication/db"
 )
@@ -37,7 +38,7 @@ func main() {
 
 	if !userExists {
 		// insert a new user
-		err = db.InsertUser(database, "admin@example.com", "password123")
+		err = db.InsertUser(database, "admin@example.com", "password123", "John", "Doe", time.Now())
 		if err != nil {
 			log.Fatalf("error inserting user: %f", err)
 		}

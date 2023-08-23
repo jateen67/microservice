@@ -47,7 +47,10 @@ func CreateTable(db *sql.DB) error {
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             email TEXT NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+			first_name TEXT NOT NULL,
+			last_name TEXT NOT NULL,
+			created_at TIMESTAMPTZ DEFAULT NOW()
         )
     `
 	_, err := db.Exec(query)
@@ -64,8 +67,8 @@ func UserExists(db *sql.DB, email string) (bool, error) {
 	return count > 0, nil
 }
 
-func InsertUser(db *sql.DB, email, password string) error {
-	query := "INSERT INTO users (email, password) VALUES ($1, $2)"
-	_, err := db.Exec(query, email, password)
+func InsertUser(db *sql.DB, email, password, first_name, last_name string, created_at time.Time) error {
+	query := "INSERT INTO users (email, password, first_name, last_name, created_at) VALUES ($1, $2, $3, $4, $5)"
+	_, err := db.Exec(query, email, password, first_name, last_name, created_at)
 	return err
 }
