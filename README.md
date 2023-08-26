@@ -4,7 +4,7 @@ The purpose of this project was to build a scalable application using microservi
 
 ### What is microservice architecture?
 
-Microservices, often known as microservices architecture, is a method of building large applications out of smaller, modular components or services. A given service can handle functionality like user authentication, alert generation, data logging, and a number of other functions. Each service handles its own database and typically runs a distinct process.
+Microservices architecture is a method of building large applications out of smaller, modular services or components. A given service can handle functionality like user authentication, alert generation, data logging, and a number of other functions. Each service handles its own database and typically runs a distinct process.
 
 ### How to run
 
