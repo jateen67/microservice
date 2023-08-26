@@ -36,7 +36,3 @@ func ConnectToClient() (*mongo.Client, error) {
 		time.Sleep(1 * time.Second)
 	}
 }
-
-func CreateCollection(client *mongo.Client) {
-
-}

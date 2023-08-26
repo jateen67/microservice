@@ -12,8 +12,8 @@ type LogEntryClientImpl struct {
 	Client *mongo.Client
 }
 
-func NewLogEntryClientImpl(client *mongo.Client) *LogEntryClientImpl {
-	return &LogEntryClientImpl{Client: client}
+func NewLogEntryClientImpl(c *mongo.Client) *LogEntryClientImpl {
+	return &LogEntryClientImpl{Client: c}
 }
 
 func (l *LogEntryClientImpl) InsertLogEntry(logEntry LogEntry) error {
