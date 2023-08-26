@@ -21,7 +21,7 @@ services:
     depends_on:
       - mongo
     environment:
-      MONGO_CONNECTION_STRING: "mongodb://mongo:password@mongo:27017"
+      MONGO_CONNECTION_STRING: "mongodb://mongo:password@mongo:27017/?ssl=false"
   postgres:
     image: postgres
     environment:

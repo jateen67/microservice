@@ -20,6 +20,11 @@ type AuthenticationPayload struct {
 	Password string `json:"password"`
 }
 
+type LoggerPayload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
+}
+
 func NewServer() *Server {
 	r := chi.NewRouter()
 
@@ -41,6 +46,7 @@ func NewServer() *Server {
 func (s *Server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
+	s.Router.Post("/logger", s.logger)
 }
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +85,54 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req, err := http.NewRequest("POST", "http://authentication/authentication", bytes.NewBuffer(reqPayload))
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	defer res.Body.Close()
+
+	var resJSON JSONResponse
+
+	err = json.NewDecoder(res.Body).Decode(&resJSON)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = s.writeJSON(w, resJSON, http.StatusOK)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
+	var logPayload LoggerPayload
+
+	err := s.readJSON(w, r, &logPayload)
+	if logPayload.Name == "" || logPayload.Data == "" {
+		s.errorJSON(w, errors.New("name and data must be non-empty"), http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	reqPayload, err := json.Marshal(logPayload)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	req, err := http.NewRequest("POST", "http://logger/logger", bytes.NewBuffer(reqPayload))
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
