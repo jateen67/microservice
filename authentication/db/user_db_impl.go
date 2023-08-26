@@ -1,6 +1,9 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+	"log"
+)
 
 type UserDBImpl struct {
 	DB *sql.DB
@@ -15,6 +18,7 @@ func (u *UserDBImpl) GetUserByEmail(email string) (*User, error) {
 	var user User
 	err := u.DB.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 	if err != nil {
+		log.Println("error getting user by email:", err)
 		return nil, err
 	}
 	return &user, nil
