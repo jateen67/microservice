@@ -4,6 +4,10 @@ go 1.20
 
 require go.mongodb.org/mongo-driver v1.12.1
 
+require github.com/go-chi/chi/v5 v5.0.10
+
+require github.com/go-chi/cors v1.2.1
+
 require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
@@ -15,6 +19,4 @@ require (
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/text v0.7.0 // indirect
-	github.com/go-chi/chi/v5 v5.0.10
-	github.com/go-chi/cors v1.2.1
 )
