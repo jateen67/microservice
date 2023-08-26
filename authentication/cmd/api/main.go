@@ -59,5 +59,4 @@ func main() {
 		log.Println("error starting server: ", err)
 		os.Exit(1)
 	}
-
 }

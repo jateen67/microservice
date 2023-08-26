@@ -2,7 +2,7 @@ package db
 
 type LogEntryDBImpl struct{}
 
-func NewUserDBImpl() *LogEntryDBImpl {
+func NewLogEntryDBImpl() *LogEntryDBImpl {
 	return nil
 }
 

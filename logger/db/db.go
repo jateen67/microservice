@@ -6,4 +6,4 @@ type Models struct {
 
 func ConnectToDB() {}
 
-func CreateDocument() {}
+func CreateCollection() {}
