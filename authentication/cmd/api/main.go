@@ -54,9 +54,9 @@ func main() {
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), srv)
 
 	if errors.Is(err, http.ErrServerClosed) {
-		log.Println("server closed")
+		log.Println("auth server closed")
 	} else if err != nil {
-		log.Println("error starting server: ", err)
+		log.Println("error starting auth server: ", err)
 		os.Exit(1)
 	}
 }

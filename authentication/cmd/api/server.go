@@ -62,16 +62,15 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
 	resPayload := JSONResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Successfully logged in as %s!", user.Email),
+		Message: fmt.Sprintf("Successfully signed in as %s!", user.Email),
 		Data:    user,
 	}
 
 	err = s.writeJSON(w, resPayload, http.StatusOK)
-
 	if err != nil {
 		s.errorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("authentication service: succesful login")
+	log.Println("authentication service: successful signin")
 }
