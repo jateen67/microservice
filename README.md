@@ -20,5 +20,6 @@ Built using:
 - [TypeScript](https://www.typescriptlang.org/)
 - [Go](https://go.dev/)
 - [PostgreSQL](https://www.postgresql.org/)
+- [MongoDB](https://www.mongodb.com/)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
