@@ -14,7 +14,7 @@ type Models struct {
 }
 
 func ConnectToDB() (*sql.DB, error) {
-	connString := os.Getenv("DATABASE_CONNECTION_STRING")
+	connString := os.Getenv("POSTGRES_CONNECTION_STRING")
 	count := 1
 
 	for {
