@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -17,9 +16,8 @@ type Server struct {
 }
 
 type LoggerPayload struct {
-	Name      string    `json:"name"`
-	Data      string    `json:"data"`
-	CreatedAt time.Time `json:"created_at"`
+	Name string `json:"name"`
+	Data string `json:"data"`
 }
 
 func NewServer(logEntryClient client.LogEntryClient) *Server {

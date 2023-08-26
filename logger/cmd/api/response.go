@@ -8,7 +8,7 @@ import (
 type JSONResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Data    any    `json:"data,omitempty"`
 }
 
 func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int) error {

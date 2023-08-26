@@ -25,7 +25,7 @@ func ConnectToClient() (*mongo.Client, error) {
 			log.Println("could not connect to mongo. retrying... ")
 			count++
 		} else {
-			return client, err
+			return client, nil
 		}
 
 		if count > 10 {
