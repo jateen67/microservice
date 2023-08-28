@@ -34,7 +34,7 @@ function App() {
     console.log(await res.json());
   };
 
-  const getLogger = async () => {
+  const getgRPCLogger = async () => {
     const body = {
       name: "activity",
       data: "some kind of data",
@@ -57,7 +57,7 @@ function App() {
     <>
       <button onClick={getBroker}>Broker Service</button>
       <button onClick={getAuthentication}>Authentication Service</button>
-      <button onClick={getLogger}>Logger Service</button>
+      <button onClick={getgRPCLogger}>gRPC Logger Service</button>
     </>
   );
 }
