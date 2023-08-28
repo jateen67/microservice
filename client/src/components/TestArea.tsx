@@ -108,21 +108,18 @@ export default function TestArea() {
                 <span className="text-muted">Output shows here...</span>
               </>
             ) : (
-              <></>
+              <>
+                <strong className="text-success">Started</strong>
+                <br></br>
+                <i className="text-light">Sending request...</i>
+                <br></br>
+                <strong className="text-light">{outputs[0]}: </strong>
+                <span className="text-light">{outputs[1]}</span>
+                <br></br>
+                <strong className="text-danger">Ended: </strong>
+                <span className="text-light">{outputs[2]}</span>
+              </>
             )}
-            {outputs.map((o) => {
-              return (
-                <>
-                  <strong className="text-success">Started</strong>
-                  <br></br>
-                  <i className="text-light">Sending request...</i>
-                  <br></br>
-                  <strong className="text-light">{o[0]}</strong>: {o[1]}
-                  <br></br>
-                  <strong className="text-danger">Ended</strong>: {o[2]}
-                </>
-              );
-            })}
           </div>
         </div>
       </div>
