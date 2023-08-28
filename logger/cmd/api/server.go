@@ -1,80 +1,41 @@
 package main
 
 import (
-	"errors"
+	"context"
 	"log"
-	"net/http"
+	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
 	"github.com/jateen67/logger/client"
+	logger "github.com/jateen67/logger/protos"
 )
 
 type Server struct {
-	Router         chi.Router
-	LogEntryClient client.LogEntryClient
+	logger.UnimplementedLoggerServiceServer
+	loggerClient client.LogEntryClient
 }
 
-type LoggerPayload struct {
-	Name string `json:"name"`
-	Data string `json:"data"`
-}
-
-func NewServer(logEntryClient client.LogEntryClient) *Server {
-	r := chi.NewRouter()
-
-	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders: []string{"Link"},
-	}))
-
-	s := &Server{
-		Router:         r,
-		LogEntryClient: logEntryClient,
-	}
-	s.routes()
-
-	return s
-}
-
-func (s *Server) routes() {
-	s.Router.Post("/logger", s.logger)
-}
-
-func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
-
-	var reqPayload LoggerPayload
-
-	err := s.readJSON(w, r, &reqPayload)
-	if err != nil {
-		s.errorJSON(w, err, http.StatusBadRequest)
-		return
-	}
-
+func (s *Server) WriteLog(ctx context.Context, req *logger.LogRequest) (*logger.LogResponse, error) {
 	doc := client.LogEntry{
-		Name: reqPayload.Name,
-		Data: reqPayload.Data,
+		Name:      req.Name,
+		Data:      req.Data,
+		CreatedAt: time.Now(),
 	}
 
-	err = s.LogEntryClient.InsertLogEntry(doc)
+	err := s.loggerClient.InsertLogEntry(doc)
 	if err != nil {
-		s.errorJSON(w, errors.New("couldn't add new log to collection"), http.StatusBadRequest)
-		return
+		log.Fatalf("failed to insert log into database: %s", err)
+		return nil, err
 	}
 
-	resPayload := JSONResponse{
+	res := &logger.LogResponse{
 		Error:   false,
-		Message: "Successfully logged activity!",
-		Data:    doc,
+		Message: "Succesfully logged activity!",
+		LogEntry: &logger.LogEntry{
+			Name:      doc.Name,
+			Data:      doc.Data,
+			CreatedAt: doc.CreatedAt.Format(time.RFC3339),
+		},
 	}
 
-	err = s.writeJSON(w, resPayload, http.StatusOK)
-	if err != nil {
-		s.errorJSON(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	log.Println("logger service: successful log")
+	return res, nil
 }

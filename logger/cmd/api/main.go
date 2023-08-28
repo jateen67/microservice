@@ -2,17 +2,17 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
+	"net"
 	"time"
 
 	"github.com/jateen67/logger/client"
+	logger "github.com/jateen67/logger/protos"
+	"google.golang.org/grpc"
 )
 
-const port = "80"
+const port = "50001"
 
 func main() {
 	// start mongo
@@ -34,13 +34,17 @@ func main() {
 
 	logEntryClient := client.NewLogEntryClientImpl(mongoClient)
 	// start logger server
-	srv := NewServer(logEntryClient).Router
-	log.Println("starting logger server")
-	err = http.ListenAndServe(fmt.Sprintf(":%s", port), srv)
-	if errors.Is(err, http.ErrServerClosed) {
-		log.Println("logger server closed")
-	} else if err != nil {
-		log.Println("error starting logger server: ", err)
-		os.Exit(1)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatalf("failed to listen: %s", err)
+	}
+	s := grpc.NewServer()
+
+	logger.RegisterLoggerServiceServer(s, &Server{loggerClient: logEntryClient})
+
+	log.Println("starting grpc server")
+	err = s.Serve(lis)
+	if err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }

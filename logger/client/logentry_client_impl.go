@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -18,7 +17,7 @@ func NewLogEntryClientImpl(c *mongo.Client) *LogEntryClientImpl {
 
 func (l *LogEntryClientImpl) InsertLogEntry(logEntry LogEntry) error {
 	coll := l.Client.Database("logs_db").Collection("logs")
-	doc := LogEntry{Name: logEntry.Name, Data: logEntry.Data, CreatedAt: time.Now()}
+	doc := LogEntry{Name: logEntry.Name, Data: logEntry.Data, CreatedAt: logEntry.CreatedAt}
 
 	_, err := coll.InsertOne(context.TODO(), doc)
 	if err != nil {
