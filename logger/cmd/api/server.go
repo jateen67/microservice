@@ -14,7 +14,7 @@ type Server struct {
 	loggerClient client.LogEntryClient
 }
 
-func (s *Server) WriteLog(ctx context.Context, req *logger.LogRequest) (*logger.LogResponse, error) {
+func (s *Server) LogActivity(ctx context.Context, req *logger.LogRequest) (*logger.LogResponse, error) {
 	doc := client.LogEntry{
 		Name:      req.Name,
 		Data:      req.Data,
@@ -37,5 +37,6 @@ func (s *Server) WriteLog(ctx context.Context, req *logger.LogRequest) (*logger.
 		},
 	}
 
+	log.Println("logger service: successful log")
 	return res, nil
 }

@@ -2,13 +2,18 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	logger "github.com/jateen67/broker/protos"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Server struct {
@@ -46,7 +51,7 @@ func NewServer() *Server {
 func (s *Server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
-	s.Router.Post("/logger", s.logger)
+	s.Router.Post("/logger", s.loggerGRPC)
 }
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
@@ -152,6 +157,52 @@ func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.errorJSON(w, err, http.StatusBadRequest)
 		return
+	}
+
+	err = s.writeJSON(w, resJSON, http.StatusOK)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *Server) loggerGRPC(w http.ResponseWriter, r *http.Request) {
+	var logPayload LoggerPayload
+
+	err := s.readJSON(w, r, &logPayload)
+	if logPayload.Name == "" || logPayload.Data == "" {
+		s.errorJSON(w, errors.New("name and data must be non-empty"), http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	conn, err := grpc.Dial("logger:50001", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	defer conn.Close()
+
+	client := logger.NewLoggerServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	res, err := client.LogActivity(ctx, &logger.LogRequest{
+		Name: logPayload.Name,
+		Data: logPayload.Data,
+	})
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	resJSON := JSONResponse{
+		Error:   res.Error,
+		Message: res.Message,
+		Data:    res.LogEntry,
 	}
 
 	err = s.writeJSON(w, resJSON, http.StatusOK)
