@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserDBImpl struct {
@@ -22,4 +24,13 @@ func (u *UserDBImpl) GetUserByEmail(email string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (u *UserDBImpl) PasswordCheck(hashedPassword string, plainPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
+	if err != nil {
+		log.Println("error validating user:", err)
+		return err
+	}
+	return nil
 }

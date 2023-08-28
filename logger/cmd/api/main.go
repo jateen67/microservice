@@ -18,7 +18,7 @@ func main() {
 	// start mongo
 	mongoClient, err := client.ConnectToClient()
 	if err != nil {
-		log.Fatalf("could not connect to mongo: %s", err)
+		log.Fatalf("could not connect to mongo: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -36,7 +36,7 @@ func main() {
 	// start logger server
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
-		log.Fatalf("failed to listen: %s", err)
+		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 

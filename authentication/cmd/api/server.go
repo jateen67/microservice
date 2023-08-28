@@ -55,7 +55,13 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 
 	user, err := s.UserDB.GetUserByEmail(reqPayload.Email)
 	if err != nil {
-		s.errorJSON(w, errors.New("couldn't find user in database"), http.StatusBadRequest)
+		s.errorJSON(w, errors.New("couldn't find user in database"), http.StatusNotFound)
+		return
+	}
+
+	err = s.UserDB.PasswordCheck(user.Password, reqPayload.Password)
+	if err != nil {
+		s.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 

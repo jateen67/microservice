@@ -23,7 +23,7 @@ func (s *Server) LogActivity(ctx context.Context, req *logger.LogRequest) (*logg
 
 	err := s.loggerClient.InsertLogEntry(doc)
 	if err != nil {
-		log.Fatalf("failed to insert log into database: %s", err)
+		log.Fatalf("failed to insert log into database: %v", err)
 		return nil, err
 	}
 

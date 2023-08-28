@@ -17,7 +17,7 @@ func main() {
 	// start postgres
 	database, err := db.ConnectToDB()
 	if err != nil {
-		log.Fatalf("could not connect to postgres: %s", err)
+		log.Fatalf("could not connect to postgres: %v", err)
 	}
 	defer database.Close()
 
@@ -33,14 +33,14 @@ func main() {
 	// check if user exists already
 	userExists, err := db.UserExists(database, "admin@example.com")
 	if err != nil {
-		log.Fatalf("error checking if user exists: %f", err)
+		log.Fatalf("error checking if user exists: %v", err)
 	}
 
 	if !userExists {
 		// insert a new user
 		err = db.InsertUser(database, "admin@example.com", "password123", "John", "Doe", time.Now())
 		if err != nil {
-			log.Fatalf("error inserting user: %f", err)
+			log.Fatalf("error inserting user: %v", err)
 		}
 		log.Println("user inserted successfully")
 	} else {
@@ -56,7 +56,7 @@ func main() {
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Println("auth server closed")
 	} else if err != nil {
-		log.Println("error starting auth server: ", err)
+		log.Println("error starting auth server:", err)
 		os.Exit(1)
 	}
 }

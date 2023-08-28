@@ -7,6 +7,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Models struct {
@@ -68,7 +69,22 @@ func UserExists(db *sql.DB, email string) (bool, error) {
 }
 
 func InsertUser(db *sql.DB, email, password, first_name, last_name string, created_at time.Time) error {
+	hashedPassword, err := HashPassword(password)
+	if err != nil {
+		return err
+	}
+
 	query := "INSERT INTO users (email, password, first_name, last_name, created_at) VALUES ($1, $2, $3, $4, $5)"
-	_, err := db.Exec(query, email, password, first_name, last_name, created_at)
+	_, err = db.Exec(query, email, hashedPassword, first_name, last_name, created_at)
 	return err
+}
+
+func HashPassword(plainPassword string) (string, error) {
+	hashBytes, err := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
+	hash := string(hashBytes)
+	return hash, nil
 }
