@@ -32,12 +32,6 @@ Below is a picture of the overall architecture of this application.
 
 [picture]
 
-**Front-end Service**
-
-The most simple service. It's simply a web page created in React.js+TypeScript (and Bootstrap for styling) that allows the user to interact with the various services.
-
-The user can communicate with the services using various methods, such as via REST, gRPC protocol, sending/consuming messages using AMQP (Advanced Message Queuing Protocol), and also SMTP (Simple Mail Transfer Protocol).
-
 **Broker Service**
 
 This serves as a main point of entry into the microservice cluster. It is optional, but in this application, all requests to the various microservices from the client go through the Broker first, which then communicates with the respective services to return a response.
@@ -58,7 +52,7 @@ The database containing the successful user activity logs can be accessed locall
 
 **Authentication Service**
 
-This is a service that simulates attempting to "sign in" a user given the proper credentials. When the user sends a request, a username and password is sent alongside it (admin@example.com/verysecret). The service will take these credentials and compare them to the credentials stored in a Postgres database to try to find a match. If there is a match, then a success message will be sent to the client.
+This is a service that simulates attempting to "sign in" a user given the proper credentials. When the user sends a request, a username and password is sent alongside it (admin@example.com/password123). The service will take these credentials, which are hashed using the [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) algorithm, and compare them to the credentials stored in a Postgres database to try to find a match. If there is a match, then a success message will be sent to the client.
 
 The Broker and Authenticator communicate with one another via JSON.
 
