@@ -48,7 +48,7 @@ The Broker and Logger communicate with one another via gRPC.
 
 The database containing the successful user activity logs can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://mongo:password@localhost:27017/logs_db?&ssl=false`)
 
-![logger](./media/logger.gif)
+![logger](./media/grpc.gif)
 
 **Authentication Service**
 
@@ -58,7 +58,7 @@ The Broker and Authenticator communicate with one another via JSON.
 
 The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: `host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC`)
 
-![authentication](./media/authentication.gif)
+![authentication](./media/auth.gif)
 
 **Listener Service**
 
