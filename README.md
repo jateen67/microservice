@@ -36,27 +36,39 @@ Below is a picture of the overall architecture of this application.
 
 This serves as a main point of entry into the microservice cluster. It is optional, but in this application, all requests to the various microservices from the client go through the Broker first, which then communicates with the respective services to return a response.
 
-Since the Broker service's main purpose is to communicate with the other services, sending a request to it directly will give a basic response back to the user, as a simple way of indicating that it is functioning well and ready to communicate.
+Since the Broker's main purpose is to communicate with the other services, sending a request to it directly will give a basic response back to the user, as a simple way of indicating that it is functioning well and ready to communicate.
 
 [picture]
 
 **Logger Service**
 
-This is a service that logs some kind of simulated activity, whatever that may be. When the user sends a request, it will insert some data into a Mongo database, indicating that the user has done some activity that's been successfully stored/logged, kind of like a traditional activity logger in any other application.
+The Logger's job is to log some kind of simulated activity, whatever that may be. When the user sends a request, it will insert some data into a Mongo database, indicating that the user has done some activity that's been successfully stored/logged, kind of like a traditional activity logger in any other application.
 
 The Broker and Logger communicate with one another via gRPC.
 
-The database containing the successful user activity logs can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: mongodb://mongo:password@localhost:27017/logs_db?&ssl=false)
+The database containing the successful user activity logs can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://mongo:password@localhost:27017/logs_db?&ssl=false`)
 
 [picture]
 
 **Authentication Service**
 
-This is a service that simulates attempting to "sign in" a user given the proper credentials. When the user sends a request, a username and password is sent alongside it (admin@example.com/password123). The service will take these credentials, which are hashed using the [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) algorithm, and compare them to the credentials stored in a Postgres database to try to find a match. If there is a match, then a success message will be sent to the client.
+The Authenticator simulates attempting to "sign in" a user given the proper credentials. When the user sends a request, a username and password is sent alongside it (admin@example.com/password123). It will take these credentials, which are hashed using the [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) algorithm, and compare them to the credentials stored in a Postgres database to try to find a match. If there is a match, then a success message will be sent to the client.
 
 The Broker and Authenticator communicate with one another via JSON.
 
-The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC)
+The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: `host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC`)
+
+[picture]
+
+**Listener Service**
+
+The Listener is another way that the user can send a request to the Logger to store information. It accomplishes the exact same things as the standard Logger, but through a different method.
+
+When the user sends a request to the Logger via this alternative method, the Broker will not communicate with the Logger Service directly like normal, but instead with the Listener, which will then in turn communicate with the Logger through RabbitMQ.
+
+This works by first pushing an event to the RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly checks to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Logger to store the simulated activity into its Mongo database.
+
+The database containing the successful user activity logs via RabbitMQ can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://admin:password@localhost:27017/logs?authSource=admin&readPreference=primary&directConnection=true&ssl=false`)
 
 [picture]
 
@@ -76,5 +88,6 @@ Built using:
 - [PostgreSQL](https://www.postgresql.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [gRPC](https://grpc.io/)
+- [RabbitMQ](https://www.rabbitmq.com/)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
