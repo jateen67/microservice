@@ -40,7 +40,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 
-	logger.RegisterLoggerServiceServer(s, &Server{loggerClient: logEntryClient})
+	logger.RegisterLoggerServiceServer(s, &server{loggerClient: logEntryClient})
 
 	log.Println("starting grpc server")
 	err = s.Serve(lis)

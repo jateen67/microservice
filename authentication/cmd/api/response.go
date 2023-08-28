@@ -5,13 +5,13 @@ import (
 	"net/http"
 )
 
-type JSONResponse struct {
+type jsonResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }
 
-func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int) error {
+func (s *server) writeJSON(w http.ResponseWriter, data jsonResponse, status int) error {
 	out, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func (s *Server) writeJSON(w http.ResponseWriter, data JSONResponse, status int)
 	return nil
 }
 
-func (s *Server) readJSON(w http.ResponseWriter, r *http.Request, data any) error {
+func (s *server) readJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(data)
@@ -40,8 +40,8 @@ func (s *Server) readJSON(w http.ResponseWriter, r *http.Request, data any) erro
 	return nil
 }
 
-func (s *Server) errorJSON(w http.ResponseWriter, err error, status int) error {
-	resPayload := JSONResponse{
+func (s *server) errorJSON(w http.ResponseWriter, err error, status int) error {
+	resPayload := jsonResponse{
 		Error:   true,
 		Message: err.Error(),
 	}

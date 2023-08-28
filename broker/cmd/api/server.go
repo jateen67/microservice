@@ -16,21 +16,21 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type Server struct {
+type server struct {
 	chi.Router
 }
 
-type AuthenticationPayload struct {
+type authenticationPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type LoggerPayload struct {
+type loggerPayload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
 }
 
-func NewServer() *Server {
+func newServer() *server {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
@@ -40,7 +40,7 @@ func NewServer() *Server {
 		ExposedHeaders: []string{"Link"},
 	}))
 
-	s := &Server{
+	s := &server{
 		Router: r,
 	}
 	s.routes()
@@ -48,15 +48,15 @@ func NewServer() *Server {
 	return s
 }
 
-func (s *Server) routes() {
+func (s *server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
 	s.Router.Post("/logger", s.logger)
 }
 
-func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
+func (s *server) broker(w http.ResponseWriter, r *http.Request) {
 
-	resPayload := JSONResponse{
+	resPayload := jsonResponse{
 		Error:   false,
 		Message: "Successfully hit the Broker!",
 	}
@@ -70,8 +70,8 @@ func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
 	log.Println("broker service: successful broker service call")
 }
 
-func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
-	var authPayload AuthenticationPayload
+func (s *server) authentication(w http.ResponseWriter, r *http.Request) {
+	var authPayload authenticationPayload
 
 	err := s.readJSON(w, r, &authPayload)
 	if authPayload.Email == "" || authPayload.Password == "" {
@@ -103,7 +103,7 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 
-	var resJSON JSONResponse
+	var resJSON jsonResponse
 
 	err = json.NewDecoder(res.Body).Decode(&resJSON)
 	if err != nil {
@@ -118,8 +118,8 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
-	var logPayload LoggerPayload
+func (s *server) logger(w http.ResponseWriter, r *http.Request) {
+	var logPayload loggerPayload
 
 	err := s.readJSON(w, r, &logPayload)
 	if logPayload.Name == "" || logPayload.Data == "" {
@@ -151,7 +151,7 @@ func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resJSON := JSONResponse{
+	resJSON := jsonResponse{
 		Error:   res.Error,
 		Message: res.Message,
 		Data:    res.LogEntry,

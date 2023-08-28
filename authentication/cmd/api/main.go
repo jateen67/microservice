@@ -49,7 +49,7 @@ func main() {
 
 	userDB := db.NewUserDBImpl(database)
 	// start auth server
-	srv := NewServer(userDB).Router
+	srv := newServer(userDB).Router
 	log.Println("starting authentication server...")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), srv)
 

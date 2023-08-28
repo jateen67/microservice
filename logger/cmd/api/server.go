@@ -9,12 +9,12 @@ import (
 	logger "github.com/jateen67/logger/protos"
 )
 
-type Server struct {
+type server struct {
 	logger.UnimplementedLoggerServiceServer
 	loggerClient client.LogEntryClient
 }
 
-func (s *Server) LogActivity(ctx context.Context, req *logger.LogRequest) (*logger.LogResponse, error) {
+func (s *server) LogActivity(ctx context.Context, req *logger.LogRequest) (*logger.LogResponse, error) {
 	doc := client.LogEntry{
 		Name:      req.Name,
 		Data:      req.Data,

@@ -70,6 +70,8 @@ This works by first pushing an event to the RabbitMQ server from the Broker via 
 
 The database containing the successful user activity logs via RabbitMQ can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://admin:password@localhost:27017/logs?authSource=admin&readPreference=primary&directConnection=true&ssl=false`)
 
+[rabbitmq logger gif]
+
 ### How to run
 
 1. Run `docker-compose up -d` in the root directory

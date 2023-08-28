@@ -69,7 +69,7 @@ func UserExists(db *sql.DB, email string) (bool, error) {
 }
 
 func InsertUser(db *sql.DB, email, password, first_name, last_name string, created_at time.Time) error {
-	hashedPassword, err := HashPassword(password)
+	hashedPassword, err := hashPassword(password)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func InsertUser(db *sql.DB, email, password, first_name, last_name string, creat
 	return err
 }
 
-func HashPassword(plainPassword string) (string, error) {
+func hashPassword(plainPassword string) (string, error) {
 	hashBytes, err := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err

@@ -11,17 +11,17 @@ import (
 	"github.com/jateen67/authentication/db"
 )
 
-type Server struct {
+type server struct {
 	Router chi.Router
 	UserDB db.UserDB
 }
 
-type AuthenticationPayload struct {
+type authenticationPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func NewServer(userDB db.UserDB) *Server {
+func newServer(userDB db.UserDB) *server {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
@@ -31,7 +31,7 @@ func NewServer(userDB db.UserDB) *Server {
 		ExposedHeaders: []string{"Link"},
 	}))
 
-	s := &Server{
+	s := &server{
 		Router: r,
 		UserDB: userDB,
 	}
@@ -40,12 +40,12 @@ func NewServer(userDB db.UserDB) *Server {
 	return s
 }
 
-func (s *Server) routes() {
+func (s *server) routes() {
 	s.Router.Post("/authentication", s.authentication)
 }
 
-func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
-	var reqPayload AuthenticationPayload
+func (s *server) authentication(w http.ResponseWriter, r *http.Request) {
+	var reqPayload authenticationPayload
 
 	err := s.readJSON(w, r, &reqPayload)
 	if err != nil {
@@ -65,7 +65,7 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resPayload := JSONResponse{
+	resPayload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Successfully signed in as %s!", user.Email),
 		Data:    user,
