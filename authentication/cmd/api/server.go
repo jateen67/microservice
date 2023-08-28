@@ -45,7 +45,6 @@ func (s *Server) routes() {
 }
 
 func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
-
 	var reqPayload AuthenticationPayload
 
 	err := s.readJSON(w, r, &reqPayload)
