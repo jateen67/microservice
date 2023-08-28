@@ -51,7 +51,7 @@ func NewServer() *Server {
 func (s *Server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
-	s.Router.Post("/logger", s.loggerGRPC)
+	s.Router.Post("/logger", s.logger)
 }
 
 func (s *Server) broker(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +118,7 @@ func (s *Server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) loggerGRPC(w http.ResponseWriter, r *http.Request) {
+func (s *Server) logger(w http.ResponseWriter, r *http.Request) {
 	var logPayload LoggerPayload
 
 	err := s.readJSON(w, r, &logPayload)
