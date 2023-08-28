@@ -24,6 +24,48 @@ Microservices have a wide variety of benefits, such as:
 
 - **Compatibility with Containerization**: Containers encapsulate individual microservices and their dependencies, creating a consistent and isolated environment for their execution. This compatibility facilitates efficient deployment, scaling, and management of microservices in diverse computing environments.
 
+### Services
+
+This project is divided into 3 services + a frontend. They are all accessed through the Broker service, which acts as a centralized point of contact.
+
+Below is a picture of the overall architecture of this application.
+
+[picture]
+
+**Front-end Service**
+
+The most simple service. It's simply a web page created in React.js+TypeScript (and Bootstrap for styling) that allows the user to interact with the various services.
+
+The user can communicate with the services using various methods, such as via REST, gRPC protocol, sending/consuming messages using AMQP (Advanced Message Queuing Protocol), and also SMTP (Simple Mail Transfer Protocol).
+
+**Broker Service**
+
+This serves as a main point of entry into the microservice cluster. It is optional, but in this application, all requests to the various microservices from the client go through the Broker first, which then communicates with the respective services to return a response.
+
+Since the Broker service's main purpose is to communicate with the other services, sending a request to it directly will give a basic response back to the user, as a simple way of indicating that it is functioning well and ready to communicate.
+
+[picture]
+
+**Logger Service**
+
+This is a service that logs some kind of simulated activity, whatever that may be. When the user sends a request, it will insert some data into a Mongo database, indicating that the user has done some activity that's been successfully stored/logged, kind of like a traditional activity logger in any other application.
+
+The Broker and Logger communicate with one another via gRPC.
+
+The database containing the successful user activity logs can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: mongodb://mongo:password@localhost:27017/logs_db?&ssl=false)
+
+[picture]
+
+**Authentication Service**
+
+This is a service that simulates attempting to "sign in" a user given the proper credentials. When the user sends a request, a username and password is sent alongside it (admin@example.com/verysecret). The service will take these credentials and compare them to the credentials stored in a Postgres database to try to find a match. If there is a match, then a success message will be sent to the client.
+
+The Broker and Authenticator communicate with one another via JSON.
+
+The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC)
+
+[picture]
+
 ### How to run
 
 1. Run `docker-compose up -d` in the root directory
