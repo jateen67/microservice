@@ -1,6 +1,6 @@
 # Distributed System
 
-[picture]
+[main gif]
 
 The purpose of this project was to build a scalable application using microservice architecture.
 
@@ -38,7 +38,7 @@ This serves as a main point of entry into the microservice cluster. It is option
 
 Since the Broker's main purpose is to communicate with the other services, sending a request to it directly will give a basic response back to the user, as a simple way of indicating that it is functioning well and ready to communicate.
 
-[picture]
+![broker](./media/broker.gif)
 
 **Logger Service**
 
@@ -48,7 +48,7 @@ The Broker and Logger communicate with one another via gRPC.
 
 The database containing the successful user activity logs can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://mongo:password@localhost:27017/logs_db?&ssl=false`)
 
-[picture]
+![logger](./media/logger.gif)
 
 **Authentication Service**
 
@@ -58,7 +58,7 @@ The Broker and Authenticator communicate with one another via JSON.
 
 The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: `host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC`)
 
-[picture]
+![authentication](./media/authentication.gif)
 
 **Listener Service**
 
@@ -69,8 +69,6 @@ When the user sends a request to the Logger via this alternative method, the Bro
 This works by first pushing an event to the RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly checks to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Logger to store the simulated activity into its Mongo database.
 
 The database containing the successful user activity logs via RabbitMQ can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://admin:password@localhost:27017/logs?authSource=admin&readPreference=primary&directConnection=true&ssl=false`)
-
-[picture]
 
 ### How to run
 
