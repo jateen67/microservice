@@ -30,7 +30,7 @@ This project is divided into 3 services + a frontend. They are all accessed thro
 
 Below is a picture of the overall architecture of this application.
 
-[picture]
+![architecture](./media/architecture.png)
 
 **Broker Service**
 
