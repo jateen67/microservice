@@ -56,6 +56,18 @@ export default function TestArea() {
     );
   };
 
+  const getRabbitMQAuthentication = async () => {
+    const payload = {
+      email: "admin@example.com",
+    };
+
+    await makeRequest(
+      "http://localhost:8080/rabbitmq-authentication",
+      payload,
+      "RabbitMQ Authenticator"
+    );
+  };
+
   const getLogger = async () => {
     const payload = {
       name: "activity",
@@ -63,19 +75,6 @@ export default function TestArea() {
     };
 
     await makeRequest("http://localhost:8080/logger", payload, "Logger");
-  };
-
-  const getRabbitMQAuth = async () => {
-    const payload = {
-      name: "activity",
-      data: "some kind of rabbitmq data",
-    };
-
-    await makeRequest(
-      "http://localhost:8080/rabbitmq-authentication",
-      payload,
-      "Listener"
-    );
   };
 
   return (
@@ -98,7 +97,7 @@ export default function TestArea() {
           </a>
           <a
             className="btn btn-outline-secondary text-light"
-            onClick={getRabbitMQAuth}
+            onClick={getRabbitMQAuthentication}
           >
             Test RabbitMQ Auth
           </a>

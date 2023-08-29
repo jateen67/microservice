@@ -5,23 +5,36 @@ import (
 	"os"
 	"time"
 
+	"github.com/jateen67/listener/event"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
 
-	conn, err := connectToRabbitMQ()
+	rabbitConn, err := connect()
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
+		os.Exit(1)
 	}
-	defer conn.Close()
+	defer rabbitConn.Close()
 
-	log.Println("successfully connected to rabbitmq")
+	log.Println("listening for and consuming rabbitmq messages...")
+
+	// consumer
+	consumer, err := event.NewConsumer(rabbitConn)
+	if err != nil {
+		panic(err)
+	}
+
+	// queue watch
+	err = consumer.Listen([]string{"log.INFO", "log.WARNING", "log.ERROR"})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
-func connectToRabbitMQ() (*amqp.Connection, error) {
-
-	count := 1
+func connect() (*amqp.Connection, error) {
+	count := 0
 
 	for {
 		conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONNECTION_STRING"))
@@ -29,6 +42,7 @@ func connectToRabbitMQ() (*amqp.Connection, error) {
 			log.Println("rabbitmq not yet ready...")
 			count++
 		} else {
+			log.Println("connected to rabbitmq successfully")
 			return conn, nil
 		}
 
@@ -37,7 +51,7 @@ func connectToRabbitMQ() (*amqp.Connection, error) {
 			return nil, err
 		}
 
-		log.Println("retrying in 2 seconds...")
-		time.Sleep(2 * time.Second)
+		log.Println("retrying in 5 seconds...")
+		time.Sleep(5 * time.Second)
 	}
 }

@@ -11,13 +11,16 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/jateen67/broker/event"
 	logger "github.com/jateen67/broker/protos"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type server struct {
-	chi.Router
+	Router chi.Router
+	Rabbit *amqp.Connection
 }
 
 type authenticationPayload struct {
@@ -30,7 +33,7 @@ type loggerPayload struct {
 	Data string `json:"data"`
 }
 
-func newServer() *server {
+func newServer(c *amqp.Connection) *server {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
@@ -42,6 +45,7 @@ func newServer() *server {
 
 	s := &server{
 		Router: r,
+		Rabbit: c,
 	}
 	s.routes()
 
@@ -119,6 +123,61 @@ func (s *server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) {
+	var authPayload authenticationPayload
+
+	err := s.readJSON(w, r, &authPayload)
+	if authPayload.Email == "" || authPayload.Password == "" {
+		s.errorJSON(w, errors.New("email and password must be non-empty"), http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = s.pushToQueue(authPayload.Email, authPayload.Password)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	resJSON := jsonResponse{
+		Error:   false,
+		Message: "logged via rabbitmq",
+		Data:    authPayload,
+	}
+
+	err = s.writeJSON(w, resJSON, http.StatusOK)
+	if err != nil {
+		s.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *server) pushToQueue(email, password string) error {
+	// get emitter
+	emitter, err := event.NewEventEmitter(s.Rabbit)
+	if err != nil {
+		return err
+	}
+
+	// payload to push to queue
+	payload := authenticationPayload{
+		Email:    email,
+		Password: password,
+	}
+
+	// encode payload so we can push json to queue
+	j, _ := json.MarshalIndent(&payload, "", "\t")
+	err = emitter.Push(string(j), "log.INFO")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *server) gRPCLogger(w http.ResponseWriter, r *http.Request) {
 	var logPayload loggerPayload
 
@@ -164,5 +223,3 @@ func (s *server) gRPCLogger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) {}
