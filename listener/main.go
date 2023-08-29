@@ -13,7 +13,7 @@ func main() {
 
 	rabbitConn, err := connect()
 	if err != nil {
-		log.Println(err)
+		log.Fatalf("could not connect to rabbitmq: %v", err)
 		os.Exit(1)
 	}
 	defer rabbitConn.Close()
@@ -23,13 +23,13 @@ func main() {
 	// consumer
 	consumer, err := event.NewConsumer(rabbitConn)
 	if err != nil {
-		panic(err)
+		log.Fatalf("could not create new consumer: %v", err)
 	}
 
 	// queue watch
 	err = consumer.Listen([]string{"log.INFO", "log.WARNING", "log.ERROR"})
 	if err != nil {
-		log.Println(err)
+		log.Fatalf("could not listen to queue: %v", err)
 	}
 }
 

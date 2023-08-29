@@ -3,32 +3,31 @@ package event
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type Consumer struct {
+type consumer struct {
 	conn *amqp.Connection
 }
 
-type Payload struct {
+type payload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func NewConsumer(conn *amqp.Connection) (Consumer, error) {
+func NewConsumer(conn *amqp.Connection) (consumer, error) {
 
-	consumer := Consumer{
+	cons := consumer{
 		conn: conn,
 	}
 
 	// set up the consumer by opening up a channel and declaring an exchange
-	channel, err := consumer.conn.Channel()
+	channel, err := cons.conn.Channel()
 	if err != nil {
-		return Consumer{}, err
+		return consumer{}, err
 	}
 
 	err = channel.ExchangeDeclare(
@@ -41,14 +40,14 @@ func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 		nil,
 	)
 	if err != nil {
-		return Consumer{}, err
+		return consumer{}, err
 	}
 
-	return consumer, nil
+	return cons, nil
 }
 
 // listens to the queue for specific topics
-func (consumer *Consumer) Listen(topics []string) error {
+func (consumer *consumer) Listen(topics []string) error {
 	// go to our consumer channel and get things from it
 	ch, err := consumer.conn.Channel()
 	if err != nil {
@@ -106,28 +105,28 @@ func (consumer *Consumer) Listen(topics []string) error {
 	go func() {
 		for d := range messages {
 
-			var payload Payload
-			_ = json.Unmarshal(d.Body, &payload)
+			var p payload
+			_ = json.Unmarshal(d.Body, &p)
 
-			go handlePayload(payload)
+			go handlePayload(p)
 		}
 	}()
 
-	fmt.Printf("waiting for message [exchange, queue] [logs_topic, %s]\n", q.Name)
+	log.Printf("waiting for message [exchange, queue] [logs_topic, %s]\n", q.Name)
 	// keep the consumption going forever by making this blocking
 	<-forever
 
 	return nil
 }
 
-func handlePayload(payload Payload) {
+func handlePayload(payload payload) {
 	err := logEvent(payload)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func logEvent(entry Payload) error {
+func logEvent(entry payload) error {
 
 	jsonData, _ := json.Marshal(entry)
 

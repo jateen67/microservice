@@ -10,10 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Models struct {
-	User User
-}
-
 func ConnectToDB() (*sql.DB, error) {
 	connString := os.Getenv("POSTGRES_CONNECTION_STRING")
 	count := 1

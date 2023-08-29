@@ -59,6 +59,7 @@ export default function TestArea() {
   const getRabbitMQAuthentication = async () => {
     const payload = {
       email: "admin@example.com",
+      password: "password123",
     };
 
     await makeRequest(

@@ -2,7 +2,7 @@ package db
 
 import "time"
 
-type User struct {
+type user struct {
 	ID        int       `json:"id"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`

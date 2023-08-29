@@ -10,10 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Models struct {
-	LogEntry LogEntry
-}
-
 func ConnectToClient() (*mongo.Client, error) {
 	connString := os.Getenv("MONGO_CONNECTION_STRING")
 	opts := options.Client().ApplyURI(connString)

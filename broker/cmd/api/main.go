@@ -17,7 +17,7 @@ func main() {
 	log.Println("starting rabbitmq server...")
 	rabbitConn, err := connect()
 	if err != nil {
-		log.Panicln(err)
+		log.Fatalf("could not connect to rabbitmq: %v", err)
 	}
 	defer rabbitConn.Close()
 

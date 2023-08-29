@@ -6,11 +6,12 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type Emitter struct {
+type emitter struct {
 	connection *amqp.Connection
 }
 
-func (e *Emitter) Push(event string, severity string) error {
+// push event to queue
+func (e *emitter) Push(event string, severity string) error {
 	channel, err := e.connection.Channel()
 	if err != nil {
 		return err
@@ -36,15 +37,15 @@ func (e *Emitter) Push(event string, severity string) error {
 	return nil
 }
 
-func NewEventEmitter(conn *amqp.Connection) (Emitter, error) {
-	emitter := Emitter{
+func NewEventEmitter(conn *amqp.Connection) (emitter, error) {
+	em := emitter{
 		connection: conn,
 	}
 
 	// set it up
-	channel, err := emitter.connection.Channel()
+	channel, err := em.connection.Channel()
 	if err != nil {
-		return Emitter{}, err
+		return emitter{}, err
 	}
 	defer channel.Close()
 
@@ -58,8 +59,8 @@ func NewEventEmitter(conn *amqp.Connection) (Emitter, error) {
 		nil,
 	)
 	if err != nil {
-		return Emitter{}, err
+		return emitter{}, err
 	}
 
-	return emitter, nil
+	return em, nil
 }

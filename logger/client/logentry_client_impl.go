@@ -7,15 +7,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type LogEntryClientImpl struct {
+type logEntryClientImpl struct {
 	Client *mongo.Client
 }
 
-func NewLogEntryClientImpl(c *mongo.Client) *LogEntryClientImpl {
-	return &LogEntryClientImpl{Client: c}
+func NewLogEntryClientImpl(c *mongo.Client) *logEntryClientImpl {
+	return &logEntryClientImpl{Client: c}
 }
 
-func (l *LogEntryClientImpl) InsertLogEntry(logEntry LogEntry) error {
+func (l *logEntryClientImpl) InsertLogEntry(logEntry LogEntry) error {
 	coll := l.Client.Database("logs_db").Collection("logs")
 	doc := LogEntry{Name: logEntry.Name, Data: logEntry.Data, CreatedAt: logEntry.CreatedAt}
 

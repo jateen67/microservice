@@ -1,6 +1,6 @@
 package db
 
 type UserDB interface {
-	GetUserByEmail(email string) (*User, error)
+	GetUserByEmail(email string) (*user, error)
 	PasswordCheck(hashedPassword, plainPassword string) error
 }
