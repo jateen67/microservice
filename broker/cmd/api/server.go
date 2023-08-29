@@ -156,19 +156,16 @@ func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *server) pushToQueue(email, password string) error {
-	// get emitter
 	emitter, err := event.NewEventEmitter(s.Rabbit)
 	if err != nil {
 		return err
 	}
 
-	// payload to push to queue
 	payload := authenticationPayload{
 		Email:    email,
 		Password: password,
 	}
 
-	// encode payload so we can push json to queue
 	j, _ := json.MarshalIndent(&payload, "", "\t")
 	err = emitter.Push(string(j), "log.INFO")
 	if err != nil {

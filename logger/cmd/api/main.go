@@ -42,7 +42,7 @@ func main() {
 
 	logger.RegisterLoggerServiceServer(s, &server{loggerClient: logEntryClient})
 
-	log.Println("starting grpc server")
+	log.Println("starting grpc server...")
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

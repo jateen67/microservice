@@ -31,7 +31,7 @@ func NewConsumer(conn *amqp.Connection) (consumer, error) {
 	}
 
 	err = channel.ExchangeDeclare(
-		"logs_topic",
+		"auth_topic",
 		"topic",
 		true,
 		false,
@@ -76,7 +76,7 @@ func (consumer *consumer) Listen(topics []string) error {
 		err = ch.QueueBind(
 			q.Name,
 			s,
-			"logs_topic",
+			"auth_topic",
 			false,
 			nil,
 		)
@@ -112,7 +112,7 @@ func (consumer *consumer) Listen(topics []string) error {
 		}
 	}()
 
-	log.Printf("waiting for message [exchange, queue] [logs_topic, %s]\n", q.Name)
+	log.Printf("waiting for message [exchange, queue] [auth_topic, %s]\n", q.Name)
 	// keep the consumption going forever by making this blocking
 	<-forever
 
@@ -145,7 +145,7 @@ func logEvent(entry payload) error {
 	defer res.Body.Close()
 
 	// make sure we get the correct status code from the logger service
-	if res.StatusCode != http.StatusAccepted {
+	if res.StatusCode != http.StatusOK {
 		return err
 	}
 

@@ -21,7 +21,7 @@ func (e *emitter) Push(event string, severity string) error {
 	log.Println("pushing to channel...")
 
 	err = channel.Publish(
-		"logs_topic",
+		"auth_topic",
 		severity,
 		false,
 		false,
@@ -50,7 +50,7 @@ func NewEventEmitter(conn *amqp.Connection) (emitter, error) {
 	defer channel.Close()
 
 	err = channel.ExchangeDeclare(
-		"logs_topic",
+		"auth_topic",
 		"topic",
 		true,
 		false,
