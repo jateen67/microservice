@@ -15,14 +15,14 @@ const port = "80"
 
 func main() {
 	log.Println("starting rabbitmq server...")
-	rabbitConn, err := connect()
+	conn, err := connect()
 	if err != nil {
 		log.Fatalf("could not connect to rabbitmq: %v", err)
 	}
-	defer rabbitConn.Close()
+	defer conn.Close()
 
 	// start broker server
-	srv := newServer(rabbitConn).Router
+	srv := newServer(conn).Router
 	log.Println("starting broker server...")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), srv)
 

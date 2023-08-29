@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -144,7 +145,7 @@ func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) 
 
 	resJSON := jsonResponse{
 		Error:   false,
-		Message: "Successfully signed in via RabbitMQ!",
+		Message: fmt.Sprintf("Signed in as %s via RabbitMQ!", authPayload.Email),
 		Data:    authPayload,
 	}
 
