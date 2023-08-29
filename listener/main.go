@@ -20,8 +20,8 @@ func main() {
 }
 
 func connectToRabbitMQ() (*amqp.Connection, error) {
-	var count int64
-	var connection *amqp.Connection
+
+	count := 1
 
 	for {
 		conn, err := amqp.Dial(os.Getenv("RABBITMQ_CONNECTION_STRING"))
@@ -29,8 +29,7 @@ func connectToRabbitMQ() (*amqp.Connection, error) {
 			log.Println("rabbitmq not yet ready...")
 			count++
 		} else {
-			connection = conn
-			break
+			return conn, nil
 		}
 
 		if count > 10 {
@@ -41,6 +40,4 @@ func connectToRabbitMQ() (*amqp.Connection, error) {
 		log.Println("retrying in 2 seconds...")
 		time.Sleep(2 * time.Second)
 	}
-
-	return connection, nil
 }
