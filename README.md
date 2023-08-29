@@ -64,7 +64,7 @@ The database containing the user credentials can be accessed locally using a dat
 
 The Listener is another way that the user can send a request to the Logger to store information. It accomplishes the exact same things as the standard Logger, but through a different method.
 
-When the user sends a request to the Logger via this alternative method, the Broker will not communicate with the Logger Service directly like normal, but instead with the Listener, which will then in turn communicate with the Logger through RabbitMQ.
+When the user sends a request to the Logger via this alternative method, the Broker will not communicate with the Logger Service directly like normal, but instead with the Listener, which will then in turn communicate with the Logger.
 
 This works by first pushing an event to the RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly checks to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Logger to store the simulated activity into its Mongo database.
 

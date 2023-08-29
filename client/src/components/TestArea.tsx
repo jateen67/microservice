@@ -59,14 +59,23 @@ export default function TestArea() {
   const getgRPCLogger = async () => {
     const payload = {
       name: "activity",
-      data: "some kind of data",
+      data: "some kind of grpc data",
     };
 
-    await makeRequest("http://localhost:8080/logger", payload, "Logger");
+    await makeRequest("http://localhost:8080/grpc-logger", payload, "Logger");
   };
 
-  const getRabbitMQLogger = () => {
-    void 0;
+  const getRabbitMQLogger = async () => {
+    const payload = {
+      name: "activity",
+      data: "some kind of rabbitmq data",
+    };
+
+    await makeRequest(
+      "http://localhost:8080/rabbitmq-logger",
+      payload,
+      "Listener"
+    );
   };
 
   return (

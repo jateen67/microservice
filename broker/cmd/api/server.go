@@ -51,7 +51,8 @@ func newServer() *server {
 func (s *server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
-	s.Router.Post("/logger", s.logger)
+	s.Router.Post("/grpc-logger", s.gRPCLogger)
+	s.Router.Post("/rabbitmq-logger", s.rabbitMQLogger)
 }
 
 func (s *server) broker(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +119,7 @@ func (s *server) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *server) logger(w http.ResponseWriter, r *http.Request) {
+func (s *server) gRPCLogger(w http.ResponseWriter, r *http.Request) {
 	var logPayload loggerPayload
 
 	err := s.readJSON(w, r, &logPayload)
@@ -163,3 +164,5 @@ func (s *server) logger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (s *server) rabbitMQLogger(w http.ResponseWriter, r *http.Request) {}
