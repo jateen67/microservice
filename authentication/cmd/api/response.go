@@ -20,7 +20,6 @@ func (s *server) writeJSON(w http.ResponseWriter, data jsonResponse, status int)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_, err = w.Write(out)
-
 	if err != nil {
 		return err
 	}
@@ -32,7 +31,6 @@ func (s *server) readJSON(w http.ResponseWriter, r *http.Request, data any) erro
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(data)
-
 	if err != nil {
 		return err
 	}

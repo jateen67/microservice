@@ -9,30 +9,21 @@ export default function TestArea() {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+    const res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: headers,
+    });
 
-      if (!res.ok) {
-        throw new Error(`request failed with status: ${res.status}`);
-      }
+    const data = await res.json();
 
-      const data = await res.json();
-
-      setSent(JSON.stringify(payload, undefined, 4));
-      setReceived(JSON.stringify(data, undefined, 4));
-      setOutputs([
-        `Response from ${service}`,
-        data.message,
-        new Date().toString(),
-      ]);
-    } catch (e) {
-      console.error("An error occurred:", e);
-      throw e;
-    }
+    setSent(JSON.stringify(payload, undefined, 4));
+    setReceived(JSON.stringify(data, undefined, 4));
+    setOutputs([
+      `Response from ${service}`,
+      data.message,
+      new Date().toString(),
+    ]);
   };
 
   const getBroker = async () => {
@@ -75,7 +66,7 @@ export default function TestArea() {
       data: "some kind of grpc data",
     };
 
-    await makeRequest("http://localhost:8080/logger", payload, "Logger");
+    await makeRequest("http://localhost:8080/grpc-logger", payload, "Logger");
   };
 
   return (

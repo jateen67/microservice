@@ -144,7 +144,7 @@ func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) 
 
 	resJSON := jsonResponse{
 		Error:   false,
-		Message: "logged via rabbitmq",
+		Message: "Successfully signed in via RabbitMQ!",
 		Data:    authPayload,
 	}
 
