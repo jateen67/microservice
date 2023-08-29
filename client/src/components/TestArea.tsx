@@ -85,7 +85,7 @@ export default function TestArea() {
             className="btn btn-outline-secondary text-light"
             onClick={getAuthentication}
           >
-            Test Authentication
+            Test Auth
           </a>
           <a
             className="btn btn-outline-secondary text-light"
@@ -97,7 +97,7 @@ export default function TestArea() {
             className="btn btn-outline-secondary text-light"
             onClick={getLogger}
           >
-            Test Logger
+            Test gRPC Logger
           </a>
           <div
             className="mt-5"

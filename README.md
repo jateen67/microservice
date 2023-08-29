@@ -58,19 +58,19 @@ The Broker and Authenticator communicate with one another via JSON.
 
 The database containing the user credentials can be accessed locally using a database manager like [Beekeeper Studio](https://www.beekeeperstudio.io/) (Connection String: `host=localhost port=5432 user=postgres password=password dbname=users_db sslmode=disable timezone=UTC`)
 
-![authentication](./media/auth.gif)
+![json authentication](./media/json-auth.gif)
 
 **Listener Service**
 
-The Listener is another way that the user can send a request to the Logger to store information. It accomplishes the exact same things as the standard Logger, but through a different method.
+The Listener is another way that the user can send a request to the Authenticator to sign in. It accomplishes the exact same things as the standard Authenticator, but through a different method.
 
-When the user sends a request to the Logger via this alternative method, the Broker will not communicate with the Logger Service directly like normal, but instead with the Listener, which will then in turn communicate with the Logger.
+When the user sends a request to the Authenticator via this alternative method, the Broker will not communicate with the it directly like normal, but instead with the Listener, which will then in turn communicate with the Authenticator.
 
-This works by first pushing an event to the RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly checks to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Logger to store the simulated activity into its Mongo database.
+This works by first pushing an event to a RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly monitors it to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Authenticator to attempt a signin.
 
 All RabbitMQ activity can be viewed and monitored by accessing the [Management UI](https://www.rabbitmq.com/management.html) on `localhost:15672`
 
-[rabbitmq logger gif]
+![rabbitmq authentication](./media/rabbitmq-auth.gif)
 
 ### How to run
 
