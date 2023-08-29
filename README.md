@@ -68,7 +68,7 @@ When the user sends a request to the Logger via this alternative method, the Bro
 
 This works by first pushing an event to the RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly checks to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Logger to store the simulated activity into its Mongo database.
 
-The database containing the successful user activity logs via RabbitMQ can be accessed locally using a Mongo client like [MongoDBCompass](https://www.mongodb.com/products/compass) (Connection String: `mongodb://admin:password@localhost:27017/logs?authSource=admin&readPreference=primary&directConnection=true&ssl=false`)
+All RabbitMQ activity can be viewed and monitored by accessing the [Management UI](https://www.rabbitmq.com/management.html) on `localhost:15672`
 
 [rabbitmq logger gif]
 
