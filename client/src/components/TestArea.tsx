@@ -56,23 +56,23 @@ export default function TestArea() {
     );
   };
 
-  const getgRPCLogger = async () => {
+  const getLogger = async () => {
     const payload = {
       name: "activity",
       data: "some kind of grpc data",
     };
 
-    await makeRequest("http://localhost:8080/grpc-logger", payload, "Logger");
+    await makeRequest("http://localhost:8080/logger", payload, "Logger");
   };
 
-  const getRabbitMQLogger = async () => {
+  const getRabbitMQAuth = async () => {
     const payload = {
       name: "activity",
       data: "some kind of rabbitmq data",
     };
 
     await makeRequest(
-      "http://localhost:8080/rabbitmq-logger",
+      "http://localhost:8080/rabbitmq-authentication",
       payload,
       "Listener"
     );
@@ -98,15 +98,15 @@ export default function TestArea() {
           </a>
           <a
             className="btn btn-outline-secondary text-light"
-            onClick={getgRPCLogger}
+            onClick={getRabbitMQAuth}
           >
-            Test gRPC Logger
+            Test RabbitMQ Auth
           </a>
           <a
             className="btn btn-outline-secondary text-light"
-            onClick={getRabbitMQLogger}
+            onClick={getLogger}
           >
-            Test RabbitMQ Logger
+            Test Logger
           </a>
           <div
             className="mt-5"

@@ -52,7 +52,7 @@ func (s *server) routes() {
 	s.Router.Post("/", s.broker)
 	s.Router.Post("/authentication", s.authentication)
 	s.Router.Post("/grpc-logger", s.gRPCLogger)
-	s.Router.Post("/rabbitmq-logger", s.rabbitMQLogger)
+	s.Router.Post("/rabbitmq-authentication", s.rabbitMQAuthentication)
 }
 
 func (s *server) broker(w http.ResponseWriter, r *http.Request) {
@@ -165,4 +165,4 @@ func (s *server) gRPCLogger(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *server) rabbitMQLogger(w http.ResponseWriter, r *http.Request) {}
+func (s *server) rabbitMQAuthentication(w http.ResponseWriter, r *http.Request) {}
