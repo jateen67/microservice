@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/jateen67/listener/event"
+	event "github.com/jateen67/listener/wabbit"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
