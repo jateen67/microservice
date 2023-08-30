@@ -66,7 +66,9 @@ The Listener is another way that the user can send a request to the Authenticato
 
 When the user sends a request to the Authenticator via this alternative method, the Broker will not communicate with the it directly like normal, but instead with the Listener, which will then in turn communicate with the Authenticator.
 
-This works by first pushing an event to a RabbitMQ server from the Broker via AMQP. RabbitMQ then takes that event and adds it to a queue. The Listener looks at that queue and constantly monitors it to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Authenticator to attempt a signin.
+This works by first pushing an event to a RabbitMQ server, which then takes that event and adds it to a queue. The Listener looks at that queue and constantly monitors it to see if there are any messages present that it should read. If so, it reads it, figures out what to do with it, and then calls the appropriate service to perform the action. In this case, it calls the Authenticator to attempt a signin.
+
+The Broker and Listener communicate with one another via AMQP.
 
 All RabbitMQ activity can be viewed and monitored by accessing the [Management UI](https://www.rabbitmq.com/management.html) on `localhost:15672`
 
