@@ -1,7 +1,5 @@
 # Distributed System
 
-[main gif]
-
 The purpose of this project was to build a scalable application using microservice architecture.
 
 ### What is microservice architecture?
