@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	rabbitConn, err := connect()
+	rabbitConn, err := connectToRabbitMQ()
 	if err != nil {
 		log.Fatalf("could not connect to rabbitmq: %v", err)
 		os.Exit(1)
@@ -33,7 +33,7 @@ func main() {
 	}
 }
 
-func connect() (*amqp.Connection, error) {
+func connectToRabbitMQ() (*amqp.Connection, error) {
 	count := 0
 
 	for {

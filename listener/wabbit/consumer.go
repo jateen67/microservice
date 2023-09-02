@@ -108,7 +108,7 @@ func (consumer *consumer) Listen(topics []string) error {
 			var p payload
 			_ = json.Unmarshal(d.Body, &p)
 
-			go handlePayload(p)
+			go handleLog(p)
 		}
 	}()
 
@@ -119,7 +119,7 @@ func (consumer *consumer) Listen(topics []string) error {
 	return nil
 }
 
-func handlePayload(payload payload) {
+func handleLog(payload payload) {
 	err := logEvent(payload)
 	if err != nil {
 		log.Println(err)

@@ -15,7 +15,7 @@ const port = "80"
 
 func main() {
 	log.Println("starting rabbitmq server...")
-	conn, err := connect()
+	conn, err := connectToRabbitMQ()
 	if err != nil {
 		log.Fatalf("could not connect to rabbitmq: %v", err)
 	}
@@ -35,7 +35,7 @@ func main() {
 
 }
 
-func connect() (*amqp.Connection, error) {
+func connectToRabbitMQ() (*amqp.Connection, error) {
 	count := 0
 
 	for {
